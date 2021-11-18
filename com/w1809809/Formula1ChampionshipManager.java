@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class Formula1ChampionshipManager implements ChampionshipManager{
 
     static List<Formula1Driver> listOfTheFormula1driver = new ArrayList<>();
+    static int[] points = {25,18,15,12,10,8,6,4,2,1};
 
     @Override
     public void createANewFormula1Driver(Driver formula1Driver) {
@@ -76,9 +77,12 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
     @Override
     public void updateTheRaceStatus(Map<Integer, Integer> resultOfTheRace) {
         System.out.println("\nUpdate the Race Status...\n");
+
         resultOfTheRace.forEach((key, value) -> {
-            System.out.println(key + " " + value);
+            Formula1Driver temporaryDriver = listOfTheFormula1driver.stream().filter(item -> item.getDriverNumber() == key).collect(Collectors.toList()).stream().findFirst().orElse(null);
+            listOfTheFormula1driver.set(listOfTheFormula1driver.indexOf(temporaryDriver),updatePlaceAndPoints(temporaryDriver, value));
         });
+        saveTheFormula1DriverToFile();
     }
 
     @Override
@@ -125,5 +129,22 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
                 .filter(driver -> driver.getDriverNumber() == (driverNumber))
                 .collect(Collectors.toList());
         return checkForDriver.size() != 0;
+    }
+
+    private Formula1Driver updatePlaceAndPoints(Formula1Driver temporaryDriver, Integer value) {
+        if (value == 1) {
+            temporaryDriver.setNumberOfGoldMedals(temporaryDriver.getNumberOfGoldMedals() + 1);
+        }
+
+        if (value == 2) {
+            temporaryDriver.setNumberOfSilverMedals(temporaryDriver.getNumberOfSilverMedals() + 1);
+        }
+
+        if (value == 3) {
+            temporaryDriver.setNumberOfBronzeMedals(temporaryDriver.getNumberOfBronzeMedals() + 1);
+        }
+
+        temporaryDriver.setTotalPoints(temporaryDriver.getTotalPoints() + points[value-1]);
+        return temporaryDriver;
     }
 }

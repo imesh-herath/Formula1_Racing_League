@@ -24,6 +24,7 @@ public class GUIConsoler {
             System.out.println("Press [3] to Update the Formula1 Driver's Team");
             System.out.println("Press [4] to Get the Formula1Driver Statistics");
             System.out.println("Press [5] to Update the Race Status");
+            System.out.println("Press [6] to Display All Drivers Statistics");
             System.out.println("Press [0] to Exit");
 
             System.out.print("Select an option: ");
@@ -57,6 +58,9 @@ public class GUIConsoler {
                 case 5 :
                     updateTheRaceStatus();
                     break;
+                case 6 :
+                    displayAllDriversStatistics();
+                    break;
                 case 0 :
                     System.out.println("Thank you for using Formula1 Manager GUI Console! ");
                     break displayMenuLoop;
@@ -66,13 +70,17 @@ public class GUIConsoler {
 
     }
 
+    private static void displayAllDriversStatistics() {
+        Formula1ChampionshipManager.listOfTheFormula1driver.forEach(item -> System.out.println(item.getDriverNumber() + " " + item.getTotalPoints()));
+    }
+
     private static void updateTheRaceStatus() {
         System.out.println("\nEnter the date (YYYY/MM/DD): ");
         String raceDate = INPUT.next();
         dateValidator(raceDate);
 
         if (dateValidator(raceDate)){
-            Map<Integer, Integer> ressultOfTheRace = new HashMap<>();
+            Map<Integer, Integer> resultOfTheRace = new HashMap<>();
             System.out.print("Enter Driver Number (with commas): ");
             String driverNumber = INPUT.next();
 
@@ -82,13 +90,13 @@ public class GUIConsoler {
                 if (formula1ChampionshipManager.checkTheDriverExist(Integer.parseInt(number))){
                     System.out.print("Enter the place for " + number + " : ");
                     int points = INPUT.nextInt();
-                    ressultOfTheRace.put(Integer.parseInt(number), points);
+                    resultOfTheRace.put(Integer.parseInt(number), points);
                 }else {
                     System.out.println("Invalid driver number! Enter the correct number.");
                 }
             }
 
-            formula1ChampionshipManager.updateTheRaceStatus(ressultOfTheRace);
+            formula1ChampionshipManager.updateTheRaceStatus(resultOfTheRace);
 
         }else{
             System.out.println("Invalid Date! Input a correct date.");
