@@ -1,9 +1,7 @@
 package com.w1809809;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Formula1ChampionshipManager implements ChampionshipManager{
@@ -129,6 +127,12 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
                 .filter(driver -> driver.getDriverNumber() == (driverNumber))
                 .collect(Collectors.toList());
         return checkForDriver.size() != 0;
+    }
+
+    @Override
+    public List<Formula1Driver> sortDriversUsingPoints() {
+        Collections.sort(listOfTheFormula1driver);
+        return listOfTheFormula1driver;
     }
 
     private Formula1Driver updatePlaceAndPoints(Formula1Driver temporaryDriver, Integer value) {

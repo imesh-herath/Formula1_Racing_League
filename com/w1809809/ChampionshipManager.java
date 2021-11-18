@@ -1,5 +1,6 @@
 package com.w1809809;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ChampionshipManager {
@@ -11,4 +12,5 @@ public interface ChampionshipManager {
     void saveTheFormula1DriverToFile();
     void retrieveTheFormula1DriverFromFile();
     boolean checkTheDriverExist(int driverNumber);
+    List <Formula1Driver> sortDriversUsingPoints();
 }

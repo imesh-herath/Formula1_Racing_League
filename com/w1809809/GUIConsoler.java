@@ -71,7 +71,8 @@ public class GUIConsoler {
     }
 
     private static void displayAllDriversStatistics() {
-        Formula1ChampionshipManager.listOfTheFormula1driver.forEach(item -> System.out.println(item.getDriverNumber() + " " + item.getTotalPoints()));
+        List<Formula1Driver> sortedListOfFormula1Drivers = formula1ChampionshipManager.sortDriversUsingPoints();
+        formula1ChampionshipManager.sortDriversUsingPoints().forEach(item -> System.out.println(item.getDriverNumber() + " " + item.getTotalPoints()));
     }
 
     private static void updateTheRaceStatus() {
