@@ -1,7 +1,6 @@
 package com.w1809809;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class GUIConsoler {
 
@@ -14,7 +13,8 @@ public class GUIConsoler {
     public static void main(String[] args) {
 
         //Update_List_from_the_file
-        formula1ChampionshipManager.retrieveTheFormula1DriverFromFile();
+        formula1ChampionshipManager.retrieveTheDriverFromFile(Formula1ChampionshipManager.fileNameOfTheDriver);
+        formula1ChampionshipManager.retrieveTheDriverFromFile(Formula1ChampionshipManager.fileNameOfTheRace);
 
         displayMenuLoop:
 
@@ -137,6 +137,8 @@ public class GUIConsoler {
         dateValidator(raceDate);
 
         if (dateValidator(raceDate)){
+            String [] dateOfArray = raceDate.split("/");
+            Date dateObject = new Date(Integer.parseInt(dateOfArray[2]), Integer.parseInt(dateOfArray[1]), Integer.parseInt(dateOfArray[0]));
             Map<Integer, Integer> resultOfTheRace = new HashMap<>();
             System.out.print("Enter Driver Number (with commas): ");
             String driverNumber = INPUT.next();
@@ -153,7 +155,7 @@ public class GUIConsoler {
                 }
             }
 
-            formula1ChampionshipManager.updateTheRaceStatus(resultOfTheRace);
+            formula1ChampionshipManager.updateTheRaceStatus(resultOfTheRace, dateObject);
 
         }else{
             System.out.println("Invalid Date! Input a correct date.");

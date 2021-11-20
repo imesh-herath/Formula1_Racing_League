@@ -7,13 +7,17 @@ import java.util.stream.Collectors;
 public class Formula1ChampionshipManager implements ChampionshipManager{
 
     static List<Formula1Driver> listOfTheFormula1driver = new ArrayList<>();
+    static List<Race> listOfRaces = new ArrayList<>();
     static int[] points = {25,18,15,12,10,8,6,4,2,1};
+    static String fileNameOfTheDriver = "DetailsOfTheDriver.txt";
+    static String fileNameOfTheRace = "DetailsOfTheRace.txt";
+
 
     @Override
     public void createANewFormula1Driver(Driver formula1Driver) {
         System.out.println("\nCreate a New Formula1 Driver...");
         listOfTheFormula1driver.add((Formula1Driver) formula1Driver);
-        saveTheFormula1DriverToFile();
+        this.saveTheDriverToFile(fileNameOfTheDriver);
 
     }
 
@@ -35,7 +39,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
         if (!isFound) {
             System.out.println("\nInvalid Driver Number");
         }
-        saveTheFormula1DriverToFile();
+        this.saveTheDriverToFile(fileNameOfTheDriver);
     }
 
     @Override
@@ -51,7 +55,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
                 listOfTheFormula1driver.set(listOfTheFormula1driver.indexOf(driver), updatedDriver);
             }
         }
-        saveTheFormula1DriverToFile();
+        this.saveTheDriverToFile(fileNameOfTheDriver);
     }
 
     @Override
@@ -69,21 +73,24 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
     }
 
     @Override
-    public void updateTheRaceStatus(Map<Integer, Integer> resultOfTheRace) {
+    public void updateTheRaceStatus(Map<Integer, Integer> resultOfTheRace, Date date) {
         System.out.println("\nUpdate the Race Status...\n");
+        Map<Formula1Driver, Integer> temporaryMap = new HashMap<>();
 
         resultOfTheRace.forEach((key, value) -> {
             Formula1Driver temporaryDriver = listOfTheFormula1driver.stream().filter(item -> item.getDriverNumber() == key).collect(Collectors.toList()).stream().findFirst().orElse(null);
             listOfTheFormula1driver.set(listOfTheFormula1driver.indexOf(temporaryDriver),updatePlaceAndPoints(temporaryDriver, value));
+            temporaryMap.put(temporaryDriver, value);
         });
-        saveTheFormula1DriverToFile();
+        this.saveTheDriverToFile(fileNameOfTheDriver);
+        this.saveTheDriverToFile(fileNameOfTheRace);
     }
 
     @Override
-    public void saveTheFormula1DriverToFile() {
+    public void saveTheDriverToFile(String fileName) {
         System.out.println("Save the Formula1 Driver To the File...\n");
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("DetailsOfTheDriver.txt", false);
+            FileOutputStream fileOutputStream = new FileOutputStream(fileName, false);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             for (Formula1Driver driver : listOfTheFormula1driver) {
                 objectOutputStream.writeObject(driver);
@@ -96,10 +103,26 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
     }
 
     @Override
-    public void retrieveTheFormula1DriverFromFile() {
+    public void saveTheRaceToFile(String fileName) {
+        System.out.println("Save the Formula1 Race To the File...\n");
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(fileName, false);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            for (Race race : listOfRaces) {
+                objectOutputStream.writeObject(race);
+            }
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void retrieveTheDriverFromFile(String fileName) {
         System.out.println("\nRetrieve the Formula1 Driver From the File...\n");
         try {
-            FileInputStream fileInputStream = new FileInputStream("DetailsOfTheDriver.txt");
+            FileInputStream fileInputStream = new FileInputStream(fileName);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             for (;;) {
                 try {
@@ -112,6 +135,21 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
             objectInputStream.close();
             fileInputStream.close();
         } catch (IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void retrieveTheRaceFromFile(String fileName) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            for (Race race : listOfRaces) {
+                objectOutputStream.writeObject(race);
+            }
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
