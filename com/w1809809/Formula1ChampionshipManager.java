@@ -180,6 +180,20 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         return listOfTheFormula1driver;
     }
 
+    @Override
+    public List<Race> filterByDriverNumber(String numberOfTheDriver) {
+        List<Race> filteringRace = new ArrayList<>();
+
+        for (Race race : listOfRaces){
+            race.getDriverPlaceMap().forEach((key, value) -> {
+                if (key.getDriverNumber() == Integer.parseInt(numberOfTheDriver)) {
+                    filteringRace.add(race);
+                }
+            });
+        }
+        return filteringRace;
+    }
+
     private Formula1Driver updatePlaceAndPoints(Formula1Driver temporaryDriver, Integer value) {
         if (value == 1) {
             temporaryDriver.setNumberOfGoldMedals(temporaryDriver.getNumberOfGoldMedals() + 1);

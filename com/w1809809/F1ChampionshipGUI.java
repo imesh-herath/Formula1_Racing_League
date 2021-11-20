@@ -1,6 +1,7 @@
 package com.w1809809;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class F1ChampionshipGUI {
     static Formula1ChampionshipManager formula1ChampionshipManager = new Formula1ChampionshipManager();
@@ -20,6 +21,9 @@ public class F1ChampionshipGUI {
         JTable table = new JTable(getAllDrivers(), new String[]{"Driver Number", "Name", "Location", "Team", "1st Places", "2nd Places", "3rd Places", "Fastest Laps", "Hat-Tricks", "Total Points", "Participated Races"});
         table.setRowHeight(20);
         table.setBounds(50,50,600,500);
+
+        ImageIcon imageIcon = new ImageIcon("f11.png"); //Create_An_Icon
+        frame.setIconImage(imageIcon.getImage());
 
 
         frame.setResizable(false);

@@ -16,5 +16,6 @@ public interface ChampionshipManager {
     boolean checkTheDriverExist(int driverNumber);
     List <Formula1Driver> sortDriversUsingPoints();
     List <Formula1Driver> sortDriversUsing1stPlaces();
+    List<Race> filterByDriverNumber(String numberOfTheDriver);
 
 }
