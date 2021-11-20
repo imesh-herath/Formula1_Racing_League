@@ -1,6 +1,7 @@
 package com.w1809809;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class GUIConsoler {
 
@@ -27,7 +28,7 @@ public class GUIConsoler {
             System.out.println("Press [6] to Display All Drivers Statistics");
             System.out.println("Press [0] to Exit");
 
-            System.out.print("Select an option: ");
+            System.out.print("\nSelect an option: ");
             int selectedOption;
 
             while (true){
@@ -72,7 +73,62 @@ public class GUIConsoler {
 
     private static void displayAllDriversStatistics() {
         List<Formula1Driver> sortedListOfFormula1Drivers = formula1ChampionshipManager.sortDriversUsingPoints();
-        formula1ChampionshipManager.sortDriversUsingPoints().forEach(item -> System.out.println(item.getDriverNumber() + " " + item.getTotalPoints()));
+
+        String[][] sortedDriverListIn2d = new String[sortedListOfFormula1Drivers.size()+1][9];
+        String[]  headersForTheTable= new String[]{"Driver Number", "Name", "Location", "Team", "1st Places", "2nd Places", "3rd Places", "Fastest Laps", "Hat-Tricks", "Total Points", "Participated Races"};
+        sortedDriverListIn2d[0] = headersForTheTable;
+
+        for (int j = 0; j < sortedListOfFormula1Drivers.size(); j++){
+            Formula1Driver formula1Driver = sortedListOfFormula1Drivers.get(j);
+            sortedDriverListIn2d[j+1] = new String[]{
+                    String.valueOf(formula1Driver.getDriverNumber()),
+                    formula1Driver.getNameOfTheDriver(),
+                    formula1Driver.getLocationOfTheDriver(),
+                    formula1Driver.getTeamNameOfTheDriver(),
+                    String.valueOf(formula1Driver.getNumberOfGoldMedals()),
+                    String.valueOf(formula1Driver.getNumberOfSilverMedals()),
+                    String.valueOf(formula1Driver.getNumberOfBronzeMedals()),
+                    String.valueOf(formula1Driver.getNumberOfFastestLaps()),
+                    String.valueOf(formula1Driver.getNumberOfHatTricks()),
+                    String.valueOf(formula1Driver.getTotalPoints()),
+                    String.valueOf(formula1Driver.getNumberOfParticipation())
+            };
+        }
+        Map <Integer, Integer> columnLength = new HashMap<>();
+        for (String[] strings : sortedDriverListIn2d){
+            for (int i=0; i<strings.length; i++){
+                if (columnLength.get(i) == null){
+                    columnLength.put(i, strings[i].length());
+                }
+                if (columnLength.get(i) < strings[i].length()){
+                    columnLength.put(i, strings[i].length());
+                }
+            }
+        }
+
+        final StringBuilder stringFormat = new StringBuilder("");
+        columnLength.entrySet().stream().forEach(e -> stringFormat.append("| %" + "-" + e.getValue() + "s "));
+        stringFormat.append("|\n");
+
+        StringBuilder linesOfTheBoarder = new StringBuilder("");
+        columnLength.forEach((key, value) -> {
+            linesOfTheBoarder.append("*");
+            for (int i=0; i<value+2; i++){
+                linesOfTheBoarder.append("-");
+            }
+        });
+        linesOfTheBoarder.append("*");
+
+        System.out.println(linesOfTheBoarder);
+        Arrays.stream(sortedDriverListIn2d).limit(1).forEach(item -> System.out.printf(stringFormat.toString(), item));
+        System.out.println(linesOfTheBoarder);
+        Arrays.stream(sortedDriverListIn2d).forEach(item -> {
+            if (item != headersForTheTable){
+                System.out.printf(stringFormat.toString(),item);
+            }
+        });
+        System.out.println(linesOfTheBoarder);
+
     }
 
     private static void updateTheRaceStatus() {
@@ -126,14 +182,16 @@ public class GUIConsoler {
         if (driver == null) {
             System.out.print("Driver Not Found!");
         } else {
-            System.out.println("Driver Name: " + driver.getNameOfTheDriver());
-            System.out.println("Driver Location: " + driver.getLocationOfTheDriver());
-            System.out.println("Driver Team: " + driver.getTeamNameOfTheDriver());
-            System.out.println("Number of Gold Medals: " + driver.getNumberOfGoldMedals());
-            System.out.println("Number of Silver Medals: " + driver.getNumberOfSilverMedals());
-            System.out.println("Number of Bronze Medals: " + driver.getNumberOfBronzeMedals());
-            System.out.println("Number of total Points: " + driver.getTotalPoints());
-            System.out.println("Number of Participated Races: " + driver.getNumberOfParticipation());
+            System.out.print("Driver Name: " + driver.getNameOfTheDriver());
+            System.out.print("Driver Location: " + driver.getLocationOfTheDriver());
+            System.out.print("Driver Team: " + driver.getTeamNameOfTheDriver());
+            System.out.print("Number of Gold Medals: " + driver.getNumberOfGoldMedals());
+            System.out.print("Number of Silver Medals: " + driver.getNumberOfSilverMedals());
+            System.out.print("Number of Bronze Medals: " + driver.getNumberOfBronzeMedals());
+            System.out.print("Enter Number of Fastest Laps: " + driver.getNumberOfFastestLaps());
+            System.out.print("Enter Number of Hat-Tricks: " + driver.getNumberOfHatTricks());
+            System.out.print("Number of total Points: " + driver.getTotalPoints());
+            System.out.print("Number of Participated Races: " + driver.getNumberOfParticipation());
         }
     }
 

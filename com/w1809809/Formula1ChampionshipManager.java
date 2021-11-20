@@ -58,18 +58,14 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
     public Formula1Driver getTheFormula1DriverStatistics(int driverNumber) {
         System.out.println("\nGet the Formula1 Driver Statistics...\n");
 
-        Formula1Driver foundDriver = null;
+        //Find_the_object_from_the_list
+        Formula1Driver checkTheDriver = listOfTheFormula1driver.stream().filter(driver -> driver.getDriverNumber() == (driverNumber)).collect(Collectors.toList()).stream().findFirst().orElse(null);
 
-        // Find_The_Object_from_the_List
-        List<Driver> checkForDriver = listOfTheFormula1driver.stream().filter(driver -> driver.getDriverNumber() == (driverNumber)).collect(Collectors.toList());
-
-        if (checkForDriver.size() == 0) {
-            System.out.println("\nInvalid Driver Number...");
-        } else {
-            foundDriver = (Formula1Driver) checkForDriver.get(0); // TODO
+        if (checkTheDriver == null){
+            System.out.println("Invalid Driver Number! Enter a correct one.");
         }
 
-        return foundDriver;
+        return checkTheDriver;
     }
 
     @Override
