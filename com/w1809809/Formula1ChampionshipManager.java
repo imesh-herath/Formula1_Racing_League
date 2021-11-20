@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Formula1ChampionshipManager implements ChampionshipManager{
+public class Formula1ChampionshipManager implements ChampionshipManager {
 
     static List<Formula1Driver> listOfTheFormula1driver = new ArrayList<>();
     static List<Race> listOfRaces = new ArrayList<>();
@@ -83,7 +83,7 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
             temporaryMap.put(temporaryDriver, value);
         });
         this.saveTheDriverToFile(fileNameOfTheDriver);
-        this.saveTheDriverToFile(fileNameOfTheRace);
+        this.saveTheRaceToFile(fileNameOfTheRace);
     }
 
     @Override
@@ -142,14 +142,19 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
     @Override
     public void retrieveTheRaceFromFile(String fileName) {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(fileName);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            for (Race race : listOfRaces) {
-                objectOutputStream.writeObject(race);
+            FileInputStream fileInputStream = new FileInputStream(fileName);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            for (;;) {
+                try {
+                    Race race = (Race) objectInputStream.readObject();
+                    listOfRaces.add(race);
+                }catch (EOFException ex) {
+                    break;
+                }
             }
-            objectOutputStream.close();
-            fileOutputStream.close();
-        } catch (IOException ex) {
+            objectInputStream.close();
+            fileInputStream.close();
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
     }
@@ -165,7 +170,13 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
 
     @Override
     public List<Formula1Driver> sortDriversUsingPoints() {
-        Collections.sort(listOfTheFormula1driver);
+        Collections.sort(listOfTheFormula1driver, new ComparatorPoints());
+        return listOfTheFormula1driver;
+    }
+
+    @Override
+    public List<Formula1Driver> sortDriversUsing1stPlaces() {
+        Collections.sort(listOfTheFormula1driver, new ComparatorWins());
         return listOfTheFormula1driver;
     }
 
@@ -184,5 +195,23 @@ public class Formula1ChampionshipManager implements ChampionshipManager{
 
         temporaryDriver.setTotalPoints(temporaryDriver.getTotalPoints() + points[value-1]);
         return temporaryDriver;
+    }
+}
+
+class ComparatorWins implements Comparator<Formula1Driver> {
+
+
+    @Override
+    public int compare(Formula1Driver o1, Formula1Driver o2) {
+        return o2.getNumberOfGoldMedals() - o1.getNumberOfGoldMedals();
+    }
+}
+
+class ComparatorPoints implements Comparator<Formula1Driver> {
+
+
+    @Override
+    public int compare(Formula1Driver o1, Formula1Driver o2) {
+        return o2.getTotalPoints() - o1.getTotalPoints();
     }
 }

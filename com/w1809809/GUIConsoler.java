@@ -14,7 +14,7 @@ public class GUIConsoler {
 
         //Update_List_from_the_file
         formula1ChampionshipManager.retrieveTheDriverFromFile(Formula1ChampionshipManager.fileNameOfTheDriver);
-        formula1ChampionshipManager.retrieveTheDriverFromFile(Formula1ChampionshipManager.fileNameOfTheRace);
+        formula1ChampionshipManager.retrieveTheRaceFromFile(Formula1ChampionshipManager.fileNameOfTheRace);
 
         displayMenuLoop:
 
