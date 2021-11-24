@@ -17,5 +17,6 @@ public interface ChampionshipManager {
     List <Formula1Driver> sortDriversUsingPoints();
     List <Formula1Driver> sortDriversUsing1stPlaces();
     List<Race> filterByDriverNumber(String numberOfTheDriver);
+    List<Race> sortByDate();
 
 }

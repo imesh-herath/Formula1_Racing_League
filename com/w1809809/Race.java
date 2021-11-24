@@ -1,7 +1,6 @@
 package com.w1809809;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Map;
 
 //assuming_that_one_race_can_only_participate_10_formula1_drivers

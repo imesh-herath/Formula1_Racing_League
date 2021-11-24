@@ -1,6 +1,9 @@
 package com.w1809809;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -74,6 +77,8 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
     @Override
     public void updateTheRaceStatus(Map<Integer, Integer> resultOfTheRace, Date date) {
+        System.out.println("\nUpdate the Formula1 Race...\n");
+
         System.out.println("\nUpdate the Race Status...\n");
         Map<Formula1Driver, Integer> temporaryMap = new HashMap<>();
 
@@ -82,6 +87,9 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
             listOfTheFormula1driver.set(listOfTheFormula1driver.indexOf(temporaryDriver),updatePlaceAndPoints(temporaryDriver, value));
             temporaryMap.put(temporaryDriver, value);
         });
+        Race tempRace = new Race(date, temporaryMap);
+        listOfRaces.add(tempRace);
+
         this.saveTheDriverToFile(fileNameOfTheDriver);
         this.saveTheRaceToFile(fileNameOfTheRace);
     }
@@ -194,6 +202,13 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         return filteringRace;
     }
 
+    @Override
+    public List<Race> sortByDate() {
+        List<Race> listOfRacesCopy = listOfRaces;
+        Collections.sort(listOfRacesCopy, (o1, o2) -> convertTheDate(o2.getDate()).compareTo(convertTheDate(o1.getDate())));
+        return listOfRacesCopy;
+    }
+
     private Formula1Driver updatePlaceAndPoints(Formula1Driver temporaryDriver, Integer value) {
         if (value == 1) {
             temporaryDriver.setNumberOfGoldMedals(temporaryDriver.getNumberOfGoldMedals() + 1);
@@ -209,6 +224,19 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 
         temporaryDriver.setTotalPoints(temporaryDriver.getTotalPoints() + points[value-1]);
         return temporaryDriver;
+    }
+
+    private java.util.Date convertTheDate(Date date) {
+        DateFormat formatOfTheDate = new SimpleDateFormat("MM/dd/yyyy");
+        java.util.Date dateObject = null;
+
+        try {
+            String temporaryStringDate = date.getMonth() + "/" + date.getDay() + "/" + date.getYear();
+            dateObject = formatOfTheDate.parse(temporaryStringDate);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        return dateObject;
     }
 }
 
@@ -229,3 +257,4 @@ class ComparatorPoints implements Comparator<Formula1Driver> {
         return o2.getTotalPoints() - o1.getTotalPoints();
     }
 }
+
