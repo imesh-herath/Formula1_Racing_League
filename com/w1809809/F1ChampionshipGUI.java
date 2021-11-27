@@ -91,8 +91,8 @@ public class F1ChampionshipGUI {
         // Add_ActionListeners_to_Button
         searchButton.addActionListener(e -> {
             List<Race> filterList = formula1ChampionshipManager.filterByDriverNumber(searchingText.getText());
-            String[][] sortByPointsData = convertRaceDetailsTo2dArray(filterList);
-            tableModel.setDataVector(sortByPointsData, dataColumn);
+            String[][] filteredData = convertRaceDetailsTo2dArray(filterList);
+            tableModel.setDataVector(filteredData, racingHeader);
         });
 
         sortByPoint.addActionListener(e -> {
