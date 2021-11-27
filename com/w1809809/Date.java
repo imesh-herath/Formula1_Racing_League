@@ -41,4 +41,9 @@ public class Date implements Serializable {
     public void setYear(int year) {
         this.year = year;
     }
+
+    @Override
+    public String toString() {
+        return year + "-" + month + "-" + day;
+    }
 }

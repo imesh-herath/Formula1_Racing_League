@@ -12,6 +12,10 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
     static List<Formula1Driver> listOfTheFormula1driver = new ArrayList<>();
     static List<Race> listOfRaces = new ArrayList<>();
     static int[] points = {25,18,15,12,10,8,6,4,2,1};
+    static int[] probability = {40,30,10,10,2,2,2,2,2};
+    static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    static int[] daysInALeapYear = {31,29,31,30,31,30,31,31,30,31,30,31};
+    static int[] daysNotInALeapYear = {31,28,31,30,31,30,31,31,30,31,30,31};
     static String fileNameOfTheDriver = "DetailsOfTheDriver.txt";
     static String fileNameOfTheRace = "DetailsOfTheRace.txt";
 
@@ -209,6 +213,104 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
         return listOfRacesCopy;
     }
 
+    @Override
+    public boolean dateValidator(String date) {
+        String[] formatDate = date.split("/");
+
+        int year = Integer.parseInt(formatDate[2]);
+        int month = Integer.parseInt(formatDate[1]);
+        int day = Integer.parseInt(formatDate[0]);
+
+        return month <= 12 && day <= (year % 4 == 0 ? daysInALeapYear[month - 1] : daysNotInALeapYear[month - 1]);
+    }
+
+    @Override
+    public void randomRaceGenerator() {
+        Map<Integer, Integer> driverIdPlaceMap = new HashMap<>();
+        int numberOfParticipants = listOfTheFormula1driver.size();
+
+        // Generate Random Date
+        boolean isValidGeneratedDate = true;
+        String generatedDateFromRandomValues;
+        do {
+            generatedDateFromRandomValues = randomValue(1,31)+"/"+randomValue(1,12)+"/"+randomValue(2020,2021);
+            if (dateValidator(generatedDateFromRandomValues)) {
+                isValidGeneratedDate = false;
+            }
+        } while (isValidGeneratedDate);
+
+        String[] dateArr = generatedDateFromRandomValues.split("/");
+        Date randomObject = new Date(Integer.parseInt(dateArr[0]), Integer.parseInt(dateArr[1]), Integer.parseInt(dateArr[2]));
+
+        // Generate Places for Each Driver
+        List<Integer> occupiedPlaceByDrivers = new ArrayList<>();
+
+        // Pick 10 driverIds randomly
+        List<Integer> allDriverIds = new ArrayList<>();
+        listOfTheFormula1driver.forEach(item -> {
+            allDriverIds.add(item.getDriverNumber());
+        });
+
+        List<Integer> randomIds = new ArrayList<>();
+        int randomIdMaxLimit = Math.min(listOfTheFormula1driver.size(), 10);
+        for (int i = 0; i < randomIdMaxLimit; i++) {
+            boolean isIdTaken = true;
+            int id;
+            do {
+                id = allDriverIds.get(randomValue(0, allDriverIds.size()-1));
+                if (!randomIds.contains(id)) {
+                    isIdTaken = false;
+                }
+            } while(isIdTaken);
+            randomIds.add(id);
+        }
+
+        // Find the first place using given scenario
+        int firstPlaceDriverId = getRaceChampion(randomIds);
+        driverIdPlaceMap.put(firstPlaceDriverId, 1);
+        occupiedPlaceByDrivers.add(1);
+
+        for (int driverId : randomIds) {
+            if (driverId != firstPlaceDriverId) {
+                int place;
+                boolean rankAlreadyUsed = true;
+                do {
+                    place = randomValue(1, numberOfParticipants);
+                    if (!occupiedPlaceByDrivers.contains(place)) {
+                        rankAlreadyUsed = false;
+                        occupiedPlaceByDrivers.add(place);
+                    }
+                } while (rankAlreadyUsed);
+
+                // Add Data to the HashMap
+                driverIdPlaceMap.put(driverId, place);
+            }
+        }
+        this.updateTheRaceStatus(driverIdPlaceMap, randomObject);
+    }
+
+    private int getRaceChampion(List<Integer> randomIds) {
+        List<Integer> ids = randomIds;
+
+        // Get ArrayList Length
+        int maxLimit = 0;
+        for (int i = 0; i < ids.size(); i++) {
+            maxLimit += points[i];
+        }
+
+        // Create ProbabilityList ArrayList to probability list
+        List<Integer> probabilisticArray = new ArrayList<>(maxLimit);
+        for (int i = 0; i < ids.size(); i++) {
+            Collections.addAll(probabilisticArray, Collections.nCopies(probability[i], ids.get(i)).toArray(new Integer[probability[i]]));
+        }
+        return probabilisticArray.get(randomValue(0,(maxLimit-1)));
+    }
+
+    private static int randomValue(int start, int end) {
+        return start + (int)Math.round(Math.random() * (end - start));
+    }
+
+
     private Formula1Driver updatePlaceAndPoints(Formula1Driver temporaryDriver, Integer value) {
         if (value == 1) {
             temporaryDriver.setNumberOfGoldMedals(temporaryDriver.getNumberOfGoldMedals() + 1);
@@ -241,8 +343,6 @@ public class Formula1ChampionshipManager implements ChampionshipManager {
 }
 
 class ComparatorWins implements Comparator<Formula1Driver> {
-
-
     @Override
     public int compare(Formula1Driver o1, Formula1Driver o2) {
         return o2.getNumberOfGoldMedals() - o1.getNumberOfGoldMedals();
@@ -250,8 +350,6 @@ class ComparatorWins implements Comparator<Formula1Driver> {
 }
 
 class ComparatorPoints implements Comparator<Formula1Driver> {
-
-
     @Override
     public int compare(Formula1Driver o1, Formula1Driver o2) {
         return o2.getTotalPoints() - o1.getTotalPoints();

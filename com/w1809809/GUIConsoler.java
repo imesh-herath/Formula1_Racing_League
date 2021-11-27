@@ -6,8 +6,7 @@ public class GUIConsoler {
 
     static Scanner INPUT = new Scanner(System.in);
     static Formula1ChampionshipManager formula1ChampionshipManager = new Formula1ChampionshipManager();
-    static int[] daysInALeapYear = {31,29,31,30,31,30,31,31,30,31,30,31};
-    static int[] daysNotInALeapYear = {31,28,31,30,31,30,31,31,30,31,30,31};
+
 
 
     public static void main(String[] args) {
@@ -132,13 +131,13 @@ public class GUIConsoler {
     }
 
     private static void updateTheRaceStatus() {
-        System.out.println("\nEnter the date (YYYY/MM/DD): ");
+        System.out.println("\nEnter the date (DD/MM/YYYY): ");
         String raceDate = INPUT.next();
-        dateValidator(raceDate);
+        formula1ChampionshipManager.dateValidator(raceDate);
 
-        if (dateValidator(raceDate)){
+        if (formula1ChampionshipManager.dateValidator(raceDate)){
             String [] dateOfArray = raceDate.split("/");
-            Date dateObject = new Date(Integer.parseInt(dateOfArray[2]), Integer.parseInt(dateOfArray[1]), Integer.parseInt(dateOfArray[0]));
+            Date dateObject = new Date(Integer.parseInt(dateOfArray[0]), Integer.parseInt(dateOfArray[1]), Integer.parseInt(dateOfArray[2]));
             Map<Integer, Integer> resultOfTheRace = new HashMap<>();
             System.out.print("Enter Driver Number (with commas): ");
             String driverNumber = INPUT.next();
@@ -163,18 +162,6 @@ public class GUIConsoler {
 
     }
 
-    private static boolean dateValidator(String raceDate) {
-        String[] dateFormatValidator = raceDate.split("/");
-
-        int year = Integer.parseInt(dateFormatValidator[0]);
-        int month = Integer.parseInt(dateFormatValidator[1]);
-        int day = Integer.parseInt(dateFormatValidator[2]);
-
-        if(month < 13 && day <= (year % 4 == 0 ? daysInALeapYear[month - 1] : daysNotInALeapYear[month - 1] )) {
-            return true;
-        }
-     return false;
-    }
 
     private static void getTheFormula1DriverStatistics() {
         System.out.print("\nEnter Driver Number: ");
@@ -254,22 +241,4 @@ public class GUIConsoler {
         formula1ChampionshipManager.createANewFormula1Driver(formula1NewDriver);
     }
 
-}
-
-class ResultOfTheRace{
-    private int driverNum;
-    private int place;
-
-    public ResultOfTheRace(int driverNum, int place){
-        this.driverNum = driverNum;
-        this.place = place;
-    }
-
-    public int getDriverNum() {
-        return driverNum;
-    }
-
-    public int getPlace() {
-        return place;
-    }
 }
